@@ -30,6 +30,14 @@ export const Navigation = () => {
             
             <div className="hidden md:flex items-center gap-1">
               <NavLink
+                to="/cashflow"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                activeClassName="bg-muted text-foreground"
+              >
+                <Briefcase className="w-4 h-4 inline mr-2" />
+                Cashflow
+              </NavLink>
+              <NavLink
                 to="/business-cases"
                 className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                 activeClassName="bg-muted text-foreground"

@@ -11,6 +11,7 @@ import Ideas from "./pages/Ideas";
 import IdeaDetail from "./pages/IdeaDetail";
 import BusinessCases from "./pages/BusinessCases";
 import Workspace from "./pages/Workspace";
+import Cashflow from "./pages/Cashflow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/business-cases" element={<BusinessCases />} />
             <Route path="/ideas" element={<AuthGuard><Ideas /></AuthGuard>} />
             <Route path="/idea/:id" element={<AuthGuard><IdeaDetail /></AuthGuard>} />
+            <Route path="/cashflow" element={<AuthGuard><Cashflow /></AuthGuard>} />
             <Route path="/workspace" element={<Workspace />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
