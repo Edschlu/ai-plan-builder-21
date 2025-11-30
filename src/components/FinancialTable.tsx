@@ -455,6 +455,18 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead className="bg-muted/50 sticky top-0 z-10">
+                    <tr className="bg-muted">
+                      <th className="px-4 py-2 text-left text-xs font-medium border-b"></th>
+                      {Array.from({ length: 24 }, (_, i) => (
+                        <th 
+                          key={i} 
+                          className="px-2 py-2 text-center text-xs font-semibold border-b text-muted-foreground"
+                        >
+                          {getMonthName(i)}
+                        </th>
+                      ))}
+                      <th className="px-4 py-2 border-b"></th>
+                    </tr>
                     <tr>
                       <th className="px-4 py-3 text-left text-sm font-semibold border-b min-w-[200px]">Item</th>
                       {Array.from({ length: 24 }, (_, i) => (
@@ -466,7 +478,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                           )}
                           onClick={() => setCurrentMonth(i)}
                         >
-                          {getMonthName(i)}
+                          M{i + 1}
                         </th>
                       ))}
                       <th className="px-4 py-3 text-right text-sm font-semibold border-b min-w-[100px]">Total</th>
