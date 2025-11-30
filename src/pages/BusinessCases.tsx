@@ -68,7 +68,7 @@ export default function BusinessCases() {
 
         if (error) throw error;
         toast.success("Strategic case created");
-        navigate(`/ideas/${data.id}`);
+        navigate(`/idea/${data.id}`);
       } else {
         const { error } = await supabase
           .from('business_cases_daily')
@@ -99,7 +99,7 @@ export default function BusinessCases() {
   const CaseCard = ({ case: caseItem, type }: { case: any; type: CaseType }) => (
     <Card className="p-6 hover:shadow-card transition-all cursor-pointer" onClick={() => {
       if (type === "strategic") {
-        navigate(`/ideas/${caseItem.id}`);
+        navigate(`/idea/${caseItem.id}`);
       }
     }}>
       <div className="flex items-start justify-between mb-3">
