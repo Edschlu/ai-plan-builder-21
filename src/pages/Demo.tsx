@@ -1,18 +1,28 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TemplateSelector from "@/components/TemplateSelector";
 import FinancialTableDemo from "@/components/FinancialTableDemo";
+import Dashboard from "./Dashboard";
 
 export default function Demo() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [showTable, setShowTable] = useState(false);
+  const [view, setView] = useState<'select' | 'dashboard'>('select');
   const navigate = useNavigate();
+  const { templateId } = useParams<{ templateId?: string }>();
 
-  if (!showTable) {
+  // If we have a URL template, show the full table
+  if (templateId) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle">
+        <FinancialTableDemo templateId={templateId} />
+      </div>
+    );
+  }
+
+  if (view === 'select') {
     return (
       <div className="min-h-screen bg-gradient-subtle">
         <div className="container mx-auto px-6 py-8">
@@ -31,7 +41,7 @@ export default function Demo() {
             onSelectTemplate={setSelectedTemplate}
             onConfirm={() => {
               if (selectedTemplate) {
-                setShowTable(true);
+                setView('dashboard');
               }
             }}
           />
@@ -55,9 +65,9 @@ export default function Demo() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <FinancialTableDemo templateId={selectedTemplate!} />
-    </div>
-  );
+  if (view === 'dashboard' && selectedTemplate) {
+    return <Dashboard templateId={selectedTemplate} />;
+  }
+
+  return null;
 }

@@ -36,6 +36,10 @@ All colors MUST be HSL.
     /* Growth green for positive metrics */
     --success: 160 65% 42%;
     --success-foreground: 0 0% 100%;
+    
+    /* Pastel variants for charts */
+    --success-pastel: 160 55% 65%;
+    --destructive-pastel: 0 70% 75%;
 
     /* Warning amber */
     --warning: 38 92% 50%;
@@ -89,6 +93,10 @@ All colors MUST be HSL.
 
     --success: 160 60% 48%;
     --success-foreground: 220 25% 8%;
+    
+    /* Pastel variants for charts */
+    --success-pastel: 160 50% 70%;
+    --destructive-pastel: 0 65% 78%;
 
     --warning: 38 92% 55%;
     --warning-foreground: 220 25% 8%;
