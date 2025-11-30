@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { CashflowCell } from "./CashflowCell";
 import { RowContextMenu } from "./RowContextMenu";
@@ -425,28 +426,52 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
 
       {/* Cashflow Table */}
       <Card className="p-6">
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead className="bg-muted/50 sticky top-0 z-10">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold border-b min-w-[200px] sticky left-0 bg-muted/50">
-                Line Item
-              </th>
-              {Array.from({ length: 24 }, (_, i) => (
-                <th
-                  key={i}
-                  className="px-3 py-3 text-center text-sm font-semibold border-b min-w-[100px]"
-                >
-                  {getMonthName(i)}
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead className="sticky top-0 z-20 bg-background">
+              {/* Year Headers */}
+              <tr className="bg-muted/30">
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground border-b min-w-[200px] sticky left-0 bg-muted/30 z-20">
+                  
                 </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-semibold border-b min-w-[120px]">
-                Total
-              </th>
-            </tr>
-          </thead>
+                <th 
+                  colSpan={12} 
+                  className="px-3 py-2 text-center text-xs font-semibold border-b border-r text-primary"
+                >
+                  Year 1
+                </th>
+                <th 
+                  colSpan={12} 
+                  className="px-3 py-2 text-center text-xs font-semibold border-b text-primary"
+                >
+                  Year 2
+                </th>
+                <th className="px-4 py-2 text-center text-xs font-semibold border-b min-w-[120px]">
+                  
+                </th>
+              </tr>
+              {/* Month Headers */}
+              <tr className="bg-muted/50">
+                <th className="px-4 py-3 text-left text-sm font-semibold border-b min-w-[200px] sticky left-0 bg-muted/50 z-20">
+                  Line Item
+                </th>
+                {Array.from({ length: 24 }, (_, i) => (
+                  <th
+                    key={i}
+                    className={`px-3 py-3 text-center text-sm font-semibold border-b min-w-[100px] ${
+                      i === 11 ? 'border-r' : ''
+                    }`}
+                  >
+                    {getMonthName(i)}
+                  </th>
+                ))}
+                <th className="px-4 py-3 text-center text-sm font-semibold border-b min-w-[120px]">
+                  Total
+                </th>
+              </tr>
+            </thead>
           <tbody>
-            {categories.map((category) => {
+            {categories.map((category, catIndex) => {
               const categoryRows = rows.filter(
                 (r) => r.category_id === category.id
               );
@@ -456,28 +481,41 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                   {/* Category Header */}
                   <tr
                     style={{ backgroundColor: `${category.color}15` }}
-                    className="font-semibold"
+                    className="font-semibold sticky top-[72px] z-10"
                   >
                     <td
-                      className="px-4 py-3 border-b sticky left-0"
+                      className="px-4 py-4 border-b sticky left-0 z-10"
                       style={{ backgroundColor: `${category.color}15` }}
                     >
-                      <div
-                        className="flex items-center gap-2"
-                      >
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: category.color }}
-                        />
-                        {category.name}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-3 h-3 rounded-full"
+                            style={{ backgroundColor: category.color }}
+                          />
+                          <span>{category.name}</span>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => addRow(category.id)}
+                          className="h-6 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          + Add Row
+                        </Button>
                       </div>
                     </td>
                     {Array.from({ length: 24 }, (_, i) => (
-                      <td key={i} className="px-3 py-3 border-b text-center text-sm">
+                      <td 
+                        key={i} 
+                        className={`px-3 py-4 border-b text-center text-sm font-medium ${
+                          i === 11 ? 'border-r' : ''
+                        }`}
+                      >
                         {formatCurrency(calculateSubtotal(category.id, i))}
                       </td>
                     ))}
-                    <td className="px-4 py-3 border-b text-center font-semibold">
+                    <td className="px-4 py-4 border-b text-center font-semibold">
                       {formatCurrency(
                         Array.from({ length: 24 }, (_, i) => i).reduce(
                           (sum, i) => sum + calculateSubtotal(category.id, i),
@@ -488,52 +526,79 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                   </tr>
 
                   {/* Category Rows */}
-                  {categoryRows.map((row) => (
-                    <RowContextMenu
-                      key={row.id}
-                      onDuplicate={() => duplicateRow(row.id)}
-                      onDelete={() => deleteRow(row.id)}
-                      onAddAbove={() => addRow(category.id, row.id)}
-                      onAddBelow={() => addRow(category.id, row.id)}
-                    >
-                      <tr className="hover:bg-muted/30 transition-colors group">
-                        <td className="px-4 py-2 border-b text-sm sticky left-0 bg-background">
-                          {row.name}
-                        </td>
-                        {Array.from({ length: 24 }, (_, i) => (
-                          <td key={i} className="px-3 py-2 border-b">
-                            <CashflowCell
-                              value={(row.monthly_values[i] as number) || 0}
-                              rowId={row.id}
-                              monthIndex={i}
-                              rowName={row.name}
-                              onUpdate={updateCellValue}
-                              onKeyDown={handleKeyDown}
-                              onDragStart={handleDragStart}
-                              onDragEnter={handleDragEnter}
-                              onDragEnd={handleDragEnd}
-                              isSelected={
-                                selectedCell?.rowId === row.id &&
-                                selectedCell?.monthIndex === i
-                              }
-                            />
+                  {categoryRows.length === 0 ? (
+                    <tr className="bg-muted/10 hover:bg-muted/20 transition-colors">
+                      <td 
+                        colSpan={26} 
+                        className="px-4 py-6 text-center text-sm text-muted-foreground border-b"
+                      >
+                        <p className="mb-2">No items in this category yet</p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => addRow(category.id)}
+                        >
+                          + Add First Row
+                        </Button>
+                      </td>
+                    </tr>
+                  ) : (
+                    categoryRows.map((row, rowIndex) => (
+                      <RowContextMenu
+                        key={row.id}
+                        onDuplicate={() => duplicateRow(row.id)}
+                        onDelete={() => deleteRow(row.id)}
+                        onAddAbove={() => addRow(category.id, row.id)}
+                        onAddBelow={() => addRow(category.id, row.id)}
+                      >
+                        <tr className={`hover:bg-muted/30 transition-colors group ${
+                          rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/5'
+                        }`}>
+                          <td className={`px-4 py-4 border-b text-sm sticky left-0 ${
+                            rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/5'
+                          }`}>
+                            {row.name}
                           </td>
-                        ))}
-                        <td className="px-4 py-2 border-b text-center text-sm font-medium">
-                          {formatCurrency(
-                            row.monthly_values.reduce((sum, val) => sum + (Number(val) || 0), 0)
-                          )}
-                        </td>
-                      </tr>
-                    </RowContextMenu>
-                  ))}
+                          {Array.from({ length: 24 }, (_, i) => (
+                            <td 
+                              key={i} 
+                              className={`px-3 py-4 border-b ${
+                                i === 11 ? 'border-r' : ''
+                              }`}
+                            >
+                              <CashflowCell
+                                value={(row.monthly_values[i] as number) || 0}
+                                rowId={row.id}
+                                monthIndex={i}
+                                rowName={row.name}
+                                onUpdate={updateCellValue}
+                                onKeyDown={handleKeyDown}
+                                onDragStart={handleDragStart}
+                                onDragEnter={handleDragEnter}
+                                onDragEnd={handleDragEnd}
+                                isSelected={
+                                  selectedCell?.rowId === row.id &&
+                                  selectedCell?.monthIndex === i
+                                }
+                              />
+                            </td>
+                          ))}
+                          <td className="px-4 py-4 border-b text-center text-sm font-medium">
+                            {formatCurrency(
+                              row.monthly_values.reduce((sum, val) => sum + (Number(val) || 0), 0)
+                            )}
+                          </td>
+                        </tr>
+                      </RowContextMenu>
+                    ))
+                  )}
                 </React.Fragment>
               );
             })}
 
             {/* Grand Total */}
-            <tr className="bg-primary/10 font-bold">
-              <td className="px-4 py-3 border-t-2 sticky left-0 bg-primary/10">
+            <tr className="bg-primary/10 font-bold sticky bottom-0 z-10">
+              <td className="px-4 py-5 border-t-2 sticky left-0 bg-primary/10 z-10">
                 Net Cashflow
               </td>
               {Array.from({ length: 24 }, (_, i) => {
@@ -541,7 +606,9 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                 return (
                   <td
                     key={i}
-                    className={`px-3 py-3 border-t-2 text-center ${
+                    className={`px-3 py-5 border-t-2 text-center font-semibold ${
+                      i === 11 ? 'border-r' : ''
+                    } ${
                       total >= 0 ? "text-green-600" : "text-red-600"
                     }`}
                   >
@@ -549,7 +616,7 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                   </td>
                 );
               })}
-              <td className="px-4 py-3 border-t-2 text-center">
+              <td className="px-4 py-5 border-t-2 text-center font-bold">
                 {formatCurrency(
                   Array.from({ length: 24 }, (_, i) => i).reduce(
                     (sum, i) => sum + calculateGrandTotal(i),
