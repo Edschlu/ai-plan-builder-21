@@ -243,7 +243,10 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
   const addRow = async (categoryId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast.error("Bitte melde dich an, um Zeilen hinzuzufügen");
+        return;
+      }
 
       const { data, error } = await supabase
         .from('plan_rows')
