@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { CashflowCell } from "./CashflowCell";
 import { RowContextMenu } from "./RowContextMenu";
 import { CashflowDashboard } from "./CashflowDashboard";
+import { AIInsights } from "./AIInsights";
 
 interface CashflowCategory {
   id: string;
@@ -333,6 +334,50 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
     return `${month} Y${year}`;
   };
 
+  const calculateMonthlyData = () => {
+    const monthlyData: {
+      month: number;
+      revenue: number;
+      costs: number;
+      net: number;
+      cash: number;
+    }[] = [];
+
+    let cumulativeCash = 0;
+
+    for (let month = 0; month < 24; month++) {
+      let revenue = 0;
+      let costs = 0;
+
+      categories.forEach((cat) => {
+        const categoryRows = rows.filter((r) => r.category_id === cat.id);
+        const subtotal = categoryRows.reduce(
+          (sum, row) => sum + (Number(row.monthly_values[month]) || 0),
+          0
+        );
+
+        if (cat.type === "revenue") {
+          revenue += subtotal;
+        } else {
+          costs += subtotal;
+        }
+      });
+
+      const net = revenue - costs;
+      cumulativeCash += net;
+
+      monthlyData.push({
+        month: month + 1,
+        revenue,
+        costs,
+        net,
+        cash: cumulativeCash,
+      });
+    }
+
+    return monthlyData;
+  };
+
   const calculateSubtotal = (categoryId: string, monthIndex: number): number => {
     return rows
       .filter((r) => r.category_id === categoryId)
@@ -517,6 +562,9 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
         </table>
       </div>
     </Card>
+
+    {/* AI Insights Floating Button */}
+    <AIInsights monthlyData={calculateMonthlyData()} categories={categories} />
     </div>
   );
 }

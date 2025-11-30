@@ -8,3 +8,7 @@ verify_jwt = false
 
 [functions.generate-financial-table]
 verify_jwt = false
+
+[functions.analyze-cashflow]
+verify_jwt = false
+
