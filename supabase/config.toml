@@ -1,0 +1,4 @@
+project_id = "vyibhpzolpgsprfdjhps"
+
+[functions.generate-financial-model]
+verify_jwt = false
