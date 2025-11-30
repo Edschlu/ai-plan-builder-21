@@ -37,6 +37,16 @@ interface PlanRow {
   monthly_values: number[];
 }
 
+const getMonthName = (index: number): string => {
+  const months = [
+    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+  ];
+  const monthIndex = index % 12;
+  const year = Math.floor(index / 12);
+  return year === 0 ? months[monthIndex] : `${months[monthIndex]} Y${year + 1}`;
+};
+
 export default function FinancialTableImproved({ templateId }: { templateId: string }) {
   const navigate = useNavigate();
   const template: TemplateConfig = templates[templateId];
@@ -109,6 +119,18 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
       revenue_growth_rate: template.assumptions.revenue_growth_rate * multiplier,
       cost_inflation_rate: template.assumptions.cost_inflation_rate / multiplier
     }));
+  };
+
+  const addRow = (categoryId: string) => {
+    const newRow: PlanRow = {
+      id: `row-${Date.now()}`,
+      category_id: categoryId,
+      name: "Neue Zeile",
+      row_type: "custom",
+      monthly_values: Array(24).fill(0)
+    };
+    setRows([...rows, newRow]);
+    toast.success("Zeile hinzugefügt");
   };
 
   const calculateCashflow = () => {
@@ -235,6 +257,20 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                 <table className="w-full border-collapse">
                   {/* Sticky Header */}
                   <thead className="sticky top-[60px] z-10 bg-muted/80 backdrop-blur-sm">
+                    <tr className="bg-muted">
+                      <th className="sticky left-0 z-20 px-4 py-2 text-left text-xs font-medium bg-muted/80 backdrop-blur-sm border-b min-w-[240px]">
+                      </th>
+                      {Array.from({ length: 24 }, (_, i) => (
+                        <th 
+                          key={i} 
+                          className="px-2 py-2 text-center text-xs font-semibold border-b text-muted-foreground"
+                        >
+                          {getMonthName(i)}
+                        </th>
+                      ))}
+                      <th className="px-4 py-2 border-b bg-muted/80 backdrop-blur-sm">
+                      </th>
+                    </tr>
                     <tr>
                       <th className="sticky left-0 z-20 px-4 py-4 text-left text-sm font-semibold bg-muted/80 backdrop-blur-sm border-b min-w-[240px]">
                         Item
@@ -252,12 +288,7 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                           onMouseEnter={() => setHoveredColumn(i)}
                           onMouseLeave={() => setHoveredColumn(null)}
                         >
-                          <div className="text-xs text-muted-foreground mb-1">
-                            M{i + 1}
-                          </div>
-                          <div className="text-[10px] text-muted-foreground/60">
-                            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i % 12]}
-                          </div>
+                          M{i + 1}
                         </th>
                       ))}
                       <th className="px-4 py-4 text-right text-sm font-semibold border-b min-w-[120px] bg-muted/80 backdrop-blur-sm">
@@ -305,15 +336,16 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                             <td colSpan={24} className="border-b bg-muted/20"></td>
                             <td className="px-4 py-3 border-b bg-card">
                               <Button 
-                                variant="ghost" 
+                                variant="outline" 
                                 size="sm" 
-                                className="h-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-7 gap-1"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  toast.info("Add item functionality");
+                                  addRow(category.id);
                                 }}
                               >
                                 <Plus className="w-4 h-4" />
+                                Neue Zeile
                               </Button>
                             </td>
                           </tr>
@@ -372,7 +404,7 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                                     isEven ? "bg-muted/5" : "bg-background"
                                   )}
                                 >
-                                  ${rowTotal.toLocaleString()}
+                                  €{rowTotal.toLocaleString()}
                                 </td>
                               </tr>
                             );
@@ -396,11 +428,11 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                               currentMonth === i && "bg-primary/15"
                             )}
                           >
-                            ${data.net.toLocaleString()}
+                            €{data.net.toLocaleString()}
                           </td>
                         ))}
                         <td className="px-4 py-4 text-right border-b font-mono">
-                          ${(totalRevenue - totalCosts).toLocaleString()}
+                          €{(totalRevenue - totalCosts).toLocaleString()}
                         </td>
                       </tr>
                       <tr className="bg-primary/10 font-semibold">
@@ -416,11 +448,11 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                               currentMonth === i && "bg-primary/15"
                             )}
                           >
-                            ${data.cash.toLocaleString()}
+                            €{data.cash.toLocaleString()}
                           </td>
                         ))}
                         <td className="px-4 py-4 text-right border-b font-mono">
-                          ${finalCash.toLocaleString()}
+                          €{finalCash.toLocaleString()}
                         </td>
                       </tr>
                     </tbody>
