@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { CashflowCell } from "./CashflowCell";
 import { RowContextMenu } from "./RowContextMenu";
+import { CashflowDashboard } from "./CashflowDashboard";
 
 interface CashflowCategory {
   id: string;
@@ -373,7 +374,12 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
   }
 
   return (
-    <Card className="p-6">
+    <div className="space-y-6">
+      {/* Dashboard KPIs and Charts */}
+      <CashflowDashboard categories={categories} rows={rows} />
+
+      {/* Cashflow Table */}
+      <Card className="p-6">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead className="bg-muted/50 sticky top-0 z-10">
@@ -511,5 +517,6 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
         </table>
       </div>
     </Card>
+    </div>
   );
 }
