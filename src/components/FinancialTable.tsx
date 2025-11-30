@@ -493,14 +493,16 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                             <td colSpan={24} className="border-b"></td>
                             <td className="px-4 py-2 text-right border-b">
                               <Button 
-                                variant="ghost" 
+                                variant="outline" 
                                 size="sm" 
                                 onClick={(e) => { 
                                   e.stopPropagation(); 
                                   addRow(category.id); 
                                 }}
+                                className="gap-2"
                               >
                                 <Plus className="w-4 h-4" />
+                                Neue Zeile
                               </Button>
                             </td>
                           </tr>
