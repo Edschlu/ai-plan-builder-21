@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -458,17 +458,17 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead className="bg-muted/50 sticky top-0 z-10">
-                    <tr className="bg-muted">
-                      <th className="px-4 py-2 text-left text-xs font-medium border-b"></th>
+                    <tr className="bg-muted/30 border-b">
+                      <th className="px-4 py-2 text-left text-sm font-medium"></th>
                       {Array.from({ length: 24 }, (_, i) => (
                         <th 
                           key={i} 
-                          className="px-2 py-2 text-center text-xs font-semibold border-b text-muted-foreground"
+                          className="px-2 py-2 text-center text-sm font-semibold text-foreground"
                         >
                           {getMonthName(i)}
                         </th>
                       ))}
-                      <th className="px-4 py-2 border-b"></th>
+                      <th className="px-4 py-2"></th>
                     </tr>
                     <tr>
                       <th className="px-4 py-3 text-left text-sm font-semibold border-b min-w-[200px]">Item</th>
@@ -491,7 +491,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                     {categories.map((category) => {
                       const categoryRows = rows.filter(r => r.category_id === category.id);
                       return (
-                        <tbody key={category.id}>
+                        <React.Fragment key={category.id}>
                           <tr 
                             className="bg-muted/30 hover:bg-muted/50 cursor-pointer" 
                             onClick={() => toggleCategory(category.id)}
@@ -558,7 +558,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                               </tr>
                             );
                           })}
-                        </tbody>
+                        </React.Fragment>
                       );
                     })}
                     
