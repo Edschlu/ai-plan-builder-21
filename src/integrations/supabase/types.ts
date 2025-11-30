@@ -14,7 +14,170 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      company_settings: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          currency: string | null
+          fiscal_year_start: number | null
+          id: string
+          runway_alert_threshold: number | null
+          starting_cash: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          currency?: string | null
+          fiscal_year_start?: number | null
+          id?: string
+          runway_alert_threshold?: number | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          currency?: string | null
+          fiscal_year_start?: number | null
+          id?: string
+          runway_alert_threshold?: number | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scenarios: {
+        Row: {
+          assumptions: Json | null
+          cost_growth_rate: number | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          revenue_growth_rate: number | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assumptions?: Json | null
+          cost_growth_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          revenue_growth_rate?: number | null
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assumptions?: Json | null
+          cost_growth_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          revenue_growth_rate?: number | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          category_id: string | null
+          created_at: string
+          date: string
+          id: string
+          is_recurring: boolean | null
+          name: string
+          notes: string | null
+          payment_delay_days: number | null
+          recurrence_end_date: string | null
+          recurrence_frequency: string | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          created_at?: string
+          date: string
+          id?: string
+          is_recurring?: boolean | null
+          name: string
+          notes?: string | null
+          payment_delay_days?: number | null
+          recurrence_end_date?: string | null
+          recurrence_frequency?: string | null
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          is_recurring?: boolean | null
+          name?: string
+          notes?: string | null
+          payment_delay_days?: number | null
+          recurrence_end_date?: string | null
+          recurrence_frequency?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
