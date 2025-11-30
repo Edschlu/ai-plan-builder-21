@@ -50,7 +50,24 @@ const getMonthName = (index: number): string => {
 
 export default function FinancialTableImproved({ templateId }: { templateId: string }) {
   const navigate = useNavigate();
-  const template: TemplateConfig = templates[templateId];
+  const template: TemplateConfig | undefined = templates[templateId];
+  
+  // Handle invalid template
+  if (!template) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Card className="p-8 max-w-md">
+          <h2 className="text-2xl font-bold mb-4">Template not found</h2>
+          <p className="text-muted-foreground mb-4">
+            The template "{templateId}" doesn't exist.
+          </p>
+          <Button onClick={() => navigate('/demo')}>
+            Back to Templates
+          </Button>
+        </Card>
+      </div>
+    );
+  }
   
   const [categories, setCategories] = useState<Category[]>(
     template.categories.map((cat, idx) => ({
