@@ -241,8 +241,11 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
   };
 
   const addRow = async (categoryId: string) => {
+    console.log("addRow called with categoryId:", categoryId);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      console.log("Auth result:", { userId: user?.id, authError });
+      
       if (!user) {
         toast.error("Bitte melde dich an, um Zeilen hinzuzufügen");
         return;
@@ -261,6 +264,8 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
         .select()
         .single();
 
+      console.log("Insert result:", { data, error });
+
       if (error) throw error;
       const formattedRow: PlanRow = {
         id: data.id,
@@ -274,6 +279,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
       setRows([...rows, formattedRow]);
       toast.success("Row added");
     } catch (error: any) {
+      console.error("addRow error:", error);
       toast.error(error.message);
     }
   };
