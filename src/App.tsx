@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Demo from "./pages/Demo";
 import Ideas from "./pages/Ideas";
 import IdeaDetail from "./pages/IdeaDetail";
+import BusinessCases from "./pages/BusinessCases";
 import Workspace from "./pages/Workspace";
 import NotFound from "./pages/NotFound";
 
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
         <Route path="/" element={<Demo />} />
         <Route path="/demo/table/:templateId" element={<Demo />} />
+            <Route path="/business-cases" element={<BusinessCases />} />
             <Route path="/ideas" element={<Ideas />} />
             <Route path="/idea/:id" element={<IdeaDetail />} />
             <Route path="/workspace" element={<Workspace />} />
