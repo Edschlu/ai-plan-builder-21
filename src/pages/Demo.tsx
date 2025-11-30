@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import TemplateSelector from "@/components/TemplateSelector";
-import FinancialTableDemo from "@/components/FinancialTableDemo";
+import FinancialTableImproved from "@/components/FinancialTableImproved";
 import Dashboard from "./Dashboard";
 
 export default function Demo() {
@@ -16,8 +16,8 @@ export default function Demo() {
   // If we have a URL template, show the full table
   if (templateId) {
     return (
-      <div className="min-h-screen bg-gradient-subtle">
-        <FinancialTableDemo templateId={templateId} />
+      <div className="min-h-screen bg-background">
+        <FinancialTableImproved templateId={templateId} />
       </div>
     );
   }
