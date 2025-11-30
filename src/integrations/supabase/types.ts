@@ -14,169 +14,247 @@ export type Database = {
   }
   public: {
     Tables: {
-      categories: {
+      business_plans: {
         Row: {
-          color: string | null
+          competitive_insight: string | null
+          cost_structure: Json | null
           created_at: string
+          customer_segments: Json | null
+          hiring_assumptions: Json | null
           id: string
-          name: string
-          type: string
+          idea_id: string
+          investor_summary: string | null
+          kpis: Json | null
+          problem_solution: Json | null
+          revenue_logic: Json | null
+          risks: Json | null
+          target_users: Json | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          color?: string | null
+          competitive_insight?: string | null
+          cost_structure?: Json | null
           created_at?: string
+          customer_segments?: Json | null
+          hiring_assumptions?: Json | null
           id?: string
-          name: string
-          type: string
+          idea_id: string
+          investor_summary?: string | null
+          kpis?: Json | null
+          problem_solution?: Json | null
+          revenue_logic?: Json | null
+          risks?: Json | null
+          target_users?: Json | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          color?: string | null
+          competitive_insight?: string | null
+          cost_structure?: Json | null
           created_at?: string
+          customer_segments?: Json | null
+          hiring_assumptions?: Json | null
           id?: string
-          name?: string
-          type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      company_settings: {
-        Row: {
-          company_name: string | null
-          created_at: string
-          currency: string | null
-          fiscal_year_start: number | null
-          id: string
-          runway_alert_threshold: number | null
-          starting_cash: number | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          company_name?: string | null
-          created_at?: string
-          currency?: string | null
-          fiscal_year_start?: number | null
-          id?: string
-          runway_alert_threshold?: number | null
-          starting_cash?: number | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          company_name?: string | null
-          created_at?: string
-          currency?: string | null
-          fiscal_year_start?: number | null
-          id?: string
-          runway_alert_threshold?: number | null
-          starting_cash?: number | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      scenarios: {
-        Row: {
-          assumptions: Json | null
-          cost_growth_rate: number | null
-          created_at: string
-          id: string
-          is_active: boolean | null
-          name: string
-          revenue_growth_rate: number | null
-          type: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          assumptions?: Json | null
-          cost_growth_rate?: number | null
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          name: string
-          revenue_growth_rate?: number | null
-          type: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          assumptions?: Json | null
-          cost_growth_rate?: number | null
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          name?: string
-          revenue_growth_rate?: number | null
-          type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      transactions: {
-        Row: {
-          amount: number
-          category_id: string | null
-          created_at: string
-          date: string
-          id: string
-          is_recurring: boolean | null
-          name: string
-          notes: string | null
-          payment_delay_days: number | null
-          recurrence_end_date: string | null
-          recurrence_frequency: string | null
-          type: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          category_id?: string | null
-          created_at?: string
-          date: string
-          id?: string
-          is_recurring?: boolean | null
-          name: string
-          notes?: string | null
-          payment_delay_days?: number | null
-          recurrence_end_date?: string | null
-          recurrence_frequency?: string | null
-          type: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          category_id?: string | null
-          created_at?: string
-          date?: string
-          id?: string
-          is_recurring?: boolean | null
-          name?: string
-          notes?: string | null
-          payment_delay_days?: number | null
-          recurrence_end_date?: string | null
-          recurrence_frequency?: string | null
-          type?: string
+          idea_id?: string
+          investor_summary?: string | null
+          kpis?: Json | null
+          problem_solution?: Json | null
+          revenue_logic?: Json | null
+          risks?: Json | null
+          target_users?: Json | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "transactions_category_id_fkey"
-            columns: ["category_id"]
+            foreignKeyName: "business_plans_idea_id_fkey"
+            columns: ["idea_id"]
             isOneToOne: false
-            referencedRelation: "categories"
+            referencedRelation: "ideas"
             referencedColumns: ["id"]
           },
         ]
+      }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          idea_id: string
+          section: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          idea_id: string
+          section?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          idea_id?: string
+          section?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_models: {
+        Row: {
+          assumptions: Json | null
+          created_at: string
+          id: string
+          idea_id: string
+          monthly_data: Json | null
+          months: number | null
+          scenario_type: string | null
+          starting_cash: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assumptions?: Json | null
+          created_at?: string
+          id?: string
+          idea_id: string
+          monthly_data?: Json | null
+          months?: number | null
+          scenario_type?: string | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assumptions?: Json | null
+          created_at?: string
+          id?: string
+          idea_id?: string
+          monthly_data?: Json | null
+          months?: number | null
+          scenario_type?: string | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_models_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ideas: {
+        Row: {
+          business_model: Json | null
+          created_at: string
+          description: string
+          id: string
+          name: string
+          preset: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+          workspace_id: string | null
+        }
+        Insert: {
+          business_model?: Json | null
+          created_at?: string
+          description: string
+          id?: string
+          name: string
+          preset?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+          workspace_id?: string | null
+        }
+        Update: {
+          business_model?: Json | null
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          preset?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+          workspace_id?: string | null
+        }
+        Relationships: []
+      }
+      workspace_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {

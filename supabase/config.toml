@@ -1,4 +1,7 @@
 project_id = "vyibhpzolpgsprfdjhps"
 
-[functions.generate-financial-model]
+[functions.generate-business-model]
+verify_jwt = false
+
+[functions.generate-business-plan]
 verify_jwt = false
