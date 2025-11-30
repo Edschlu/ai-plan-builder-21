@@ -170,6 +170,7 @@ export type Database = {
           revenue_growth_rate: number | null
           scenario_type: string | null
           starting_cash: number | null
+          template_type: string | null
           updated_at: string
           user_id: string
         }
@@ -181,6 +182,7 @@ export type Database = {
           revenue_growth_rate?: number | null
           scenario_type?: string | null
           starting_cash?: number | null
+          template_type?: string | null
           updated_at?: string
           user_id: string
         }
@@ -192,6 +194,7 @@ export type Database = {
           revenue_growth_rate?: number | null
           scenario_type?: string | null
           starting_cash?: number | null
+          template_type?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -350,6 +353,41 @@ export type Database = {
           },
           {
             foreignKeyName: "plan_rows_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_snapshots: {
+        Row: {
+          created_at: string
+          id: string
+          idea_id: string
+          name: string
+          snapshot_data: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          idea_id: string
+          name: string
+          snapshot_data: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          idea_id?: string
+          name?: string
+          snapshot_data?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_snapshots_idea_id_fkey"
             columns: ["idea_id"]
             isOneToOne: false
             referencedRelation: "ideas"
