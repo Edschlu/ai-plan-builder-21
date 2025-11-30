@@ -29,6 +29,22 @@ export interface TemplateConfig {
 }
 
 export const templates: Record<string, TemplateConfig> = {
+  blank: {
+    id: 'blank',
+    name: 'Leere Vorlage',
+    description: 'Starten Sie von Grund auf mit einer leeren Cashflow-Planung',
+    icon: '📋',
+    categories: [
+      { name: 'Umsätze', type: 'revenue', color: '#10b981' },
+      { name: 'Kosten', type: 'cost', color: '#ef4444' }
+    ],
+    rows: [],
+    assumptions: {
+      revenue_growth_rate: 5,
+      cost_inflation_rate: 3,
+      starting_cash: 50000
+    }
+  },
   saas: {
     id: 'saas',
     name: 'SaaS Startup',
