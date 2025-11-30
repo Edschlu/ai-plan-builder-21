@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.generate-business-plan]
 verify_jwt = false
+
+[functions.generate-financial-table]
+verify_jwt = false

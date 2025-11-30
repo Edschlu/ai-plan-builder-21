@@ -161,6 +161,50 @@ export type Database = {
           },
         ]
       }
+      forecast_assumptions: {
+        Row: {
+          cost_inflation_rate: number | null
+          created_at: string
+          id: string
+          idea_id: string
+          revenue_growth_rate: number | null
+          scenario_type: string | null
+          starting_cash: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cost_inflation_rate?: number | null
+          created_at?: string
+          id?: string
+          idea_id: string
+          revenue_growth_rate?: number | null
+          scenario_type?: string | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cost_inflation_rate?: number | null
+          created_at?: string
+          id?: string
+          idea_id?: string
+          revenue_growth_rate?: number | null
+          scenario_type?: string | null
+          starting_cash?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forecast_assumptions_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ideas: {
         Row: {
           business_model: Json | null
@@ -199,6 +243,119 @@ export type Database = {
           workspace_id?: string | null
         }
         Relationships: []
+      }
+      plan_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          idea_id: string
+          is_collapsed: boolean | null
+          name: string
+          sort_order: number | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          idea_id: string
+          is_collapsed?: boolean | null
+          name: string
+          sort_order?: number | null
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          idea_id?: string
+          is_collapsed?: boolean | null
+          name?: string
+          sort_order?: number | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_categories_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_rows: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          id: string
+          idea_id: string
+          is_recurring: boolean | null
+          monthly_values: Json
+          name: string
+          notes: string | null
+          payment_delay_days: number | null
+          recurring_frequency: string | null
+          row_type: string
+          sort_order: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          idea_id: string
+          is_recurring?: boolean | null
+          monthly_values?: Json
+          name: string
+          notes?: string | null
+          payment_delay_days?: number | null
+          recurring_frequency?: string | null
+          row_type: string
+          sort_order?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          id?: string
+          idea_id?: string
+          is_recurring?: boolean | null
+          monthly_values?: Json
+          name?: string
+          notes?: string | null
+          payment_delay_days?: number | null
+          recurring_frequency?: string | null
+          row_type?: string
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_rows_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "plan_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plan_rows_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workspace_members: {
         Row: {
