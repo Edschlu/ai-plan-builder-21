@@ -49,6 +49,16 @@ interface ForecastAssumptions {
   scenario_type: 'base' | 'optimistic' | 'pessimistic';
 }
 
+const getMonthName = (index: number): string => {
+  const months = [
+    'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'
+  ];
+  const monthIndex = index % 12;
+  const year = Math.floor(index / 12);
+  return year === 0 ? months[monthIndex] : `${months[monthIndex]} Y${year + 1}`;
+};
+
 export default function FinancialTable({ ideaId }: { ideaId: string }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [rows, setRows] = useState<PlanRow[]>([]);
@@ -456,7 +466,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                           )}
                           onClick={() => setCurrentMonth(i)}
                         >
-                          M{i + 1}
+                          {getMonthName(i)}
                         </th>
                       ))}
                       <th className="px-4 py-3 text-right text-sm font-semibold border-b min-w-[100px]">Total</th>
@@ -526,7 +536,7 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                                   </td>
                                 ))}
                                 <td className="px-4 py-2 text-right text-sm font-semibold border-b font-mono">
-                                  ${rowTotal.toLocaleString()}
+                                  €{rowTotal.toLocaleString()}
                                 </td>
                               </tr>
                             );
@@ -548,11 +558,11 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                               currentMonth === i && "bg-primary/10"
                             )}
                           >
-                            ${data.net.toLocaleString()}
+                            €{data.net.toLocaleString()}
                           </td>
                         ))}
                         <td className="px-4 py-3 text-right border-b font-mono">
-                          ${(totalRevenue - totalCosts).toLocaleString()}
+                          €{(totalRevenue - totalCosts).toLocaleString()}
                         </td>
                       </tr>
                       <tr className="bg-primary/10 font-semibold">
@@ -566,11 +576,11 @@ export default function FinancialTable({ ideaId }: { ideaId: string }) {
                               currentMonth === i && "bg-primary/10"
                             )}
                           >
-                            ${data.cash.toLocaleString()}
+                            €{data.cash.toLocaleString()}
                           </td>
                         ))}
                         <td className="px-4 py-3 text-right border-b font-mono">
-                          ${finalCash.toLocaleString()}
+                          €{finalCash.toLocaleString()}
                         </td>
                       </tr>
                     </tbody>

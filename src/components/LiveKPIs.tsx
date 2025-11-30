@@ -38,7 +38,7 @@ export default function LiveKPIs({
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Revenue</div>
-              <div className="text-lg font-bold">${currentMonthRevenue.toLocaleString()}</div>
+              <div className="text-lg font-bold">€{currentMonthRevenue.toLocaleString()}</div>
             </div>
           </div>
 
@@ -48,7 +48,7 @@ export default function LiveKPIs({
             </div>
             <div>
               <div className="text-xs text-muted-foreground">Costs</div>
-              <div className="text-lg font-bold">${currentMonthCosts.toLocaleString()}</div>
+              <div className="text-lg font-bold">€{currentMonthCosts.toLocaleString()}</div>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export default function LiveKPIs({
                 "text-lg font-bold",
                 netCashflow > 0 ? "text-success" : "text-destructive"
               )}>
-                ${netCashflow.toLocaleString()}
+                €{netCashflow.toLocaleString()}
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function LiveKPIs({
                 "text-lg font-bold",
                 isPositiveCash ? "text-primary" : "text-warning"
               )}>
-                ${cumulativeCash.toLocaleString()}
+                €{cumulativeCash.toLocaleString()}
               </div>
             </div>
           </div>
