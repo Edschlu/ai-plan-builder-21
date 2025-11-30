@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -16,7 +16,8 @@ import PlayModeControls from "./PlayModeControls";
 import LiveKPIs from "./LiveKPIs";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import EditableCell from "./table/EditableCell";
+import ExcelCell from "./table/ExcelCell";
+import { useExcelNavigation, CellPosition } from "@/hooks/useExcelNavigation";
 import RowMenu from "./table/RowMenu";
 import MonthSummaryBar from "./table/MonthSummaryBar";
 import QuickActionsToolbar from "./table/QuickActionsToolbar";
@@ -91,7 +92,29 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
   const [currentMonth, setCurrentMonth] = useState(0);
   const [hoveredColumn, setHoveredColumn] = useState<number | null>(null);
 
-  const updateCellValue = (rowId: string, monthIndex: number, value: number) => {
+  // Excel-style cell selection & navigation
+  const [focusedCell, setFocusedCell] = useState<CellPosition | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const allRowIds = rows.map(r => r.id);
+
+  const { setCurrentPosition, navigateToCell } = useExcelNavigation({
+    totalColumns: 24,
+    rowIds: allRowIds,
+    onNavigate: (position) => {
+      setFocusedCell(position);
+      setIsEditMode(false);
+    },
+    onEnterEditMode: () => {
+      setIsEditMode(true);
+    },
+    onExitEditMode: () => {
+      setIsEditMode(false);
+    },
+    isEditMode,
+  });
+
+  const updateCellValue = useCallback((rowId: string, monthIndex: number, value: number) => {
     setRows(rows.map(r => {
       if (r.id === rowId) {
         const newValues = [...r.monthly_values];
@@ -100,7 +123,17 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
       }
       return r;
     }));
-  };
+  }, [rows]);
+
+  const handleCellClick = useCallback((rowId: string, columnIndex: number) => {
+    setFocusedCell({ rowId, columnIndex });
+    setCurrentPosition({ rowId, columnIndex });
+    setIsEditMode(false);
+  }, [setCurrentPosition]);
+
+  const handleCellDoubleClick = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
 
   const toggleCategory = (categoryId: string) => {
     setCategories(categories.map(c =>
@@ -388,13 +421,20 @@ export default function FinancialTableImproved({ templateId }: { templateId: str
                                       hoveredColumn === monthIndex && "ring-1 ring-inset ring-accent/20"
                                     )}
                                   >
-                                    <EditableCell
+                                    <ExcelCell
                                       value={value}
                                       onChange={(newValue) => updateCellValue(row.id, monthIndex, newValue)}
                                       isRevenue={row.row_type === 'revenue'}
                                       isCost={row.row_type === 'cost' || row.row_type === 'tax'}
                                       isHeadcount={row.row_type === 'headcount'}
                                       isHighlighted={currentMonth === monthIndex}
+                                      isSelected={focusedCell?.rowId === row.id && focusedCell?.columnIndex === monthIndex}
+                                      isFocused={focusedCell?.rowId === row.id && focusedCell?.columnIndex === monthIndex}
+                                      onClick={() => handleCellClick(row.id, monthIndex)}
+                                      onDoubleClick={handleCellDoubleClick}
+                                      onStartEdit={() => setIsEditMode(true)}
+                                      rowId={row.id}
+                                      columnIndex={monthIndex}
                                     />
                                   </td>
                                 ))}
