@@ -18,6 +18,7 @@ interface CashflowCellProps {
   onDragEnter: (monthIndex: number) => void;
   onDragEnd: () => void;
   isSelected?: boolean;
+  readOnly?: boolean;
 }
 
 export function CashflowCell({
@@ -31,6 +32,7 @@ export function CashflowCell({
   onDragEnter,
   onDragEnd,
   isSelected,
+  readOnly = false,
 }: CashflowCellProps) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,18 +82,28 @@ export function CashflowCell({
               className="h-8 text-center text-sm border-none bg-transparent hover:bg-muted/50 focus:bg-white focus:border-primary transition-colors"
               data-row-id={rowId}
               data-month={monthIndex}
+              readOnly={readOnly}
+              disabled={readOnly}
             />
             {/* Drag handle indicator */}
             <div className="absolute bottom-0 right-0 w-2 h-2 bg-primary/50 cursor-crosshair opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p className="text-xs">
-            <strong>{rowName}</strong> - Month {monthIndex + 1}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {formatCurrency(value)}
-          </p>
+          {readOnly ? (
+            <p className="text-xs text-amber-600 font-medium">
+              Please log in to edit
+            </p>
+          ) : (
+            <>
+              <p className="text-xs">
+                <strong>{rowName}</strong> - Month {monthIndex + 1}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {formatCurrency(value)}
+              </p>
+            </>
+          )}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -3,11 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, Lock, LogIn } from "lucide-react";
 import { CashflowCell } from "./CashflowCell";
 import { RowContextMenu } from "./RowContextMenu";
 import { CashflowDashboard } from "./CashflowDashboard";
 import { AIInsights } from "./AIInsights";
+import { LoginDialog } from "@/components/auth/LoginDialog";
 
 interface CashflowCategory {
   id: string;
@@ -34,6 +36,8 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
   const [categories, setCategories] = useState<CashflowCategory[]>([]);
   const [rows, setRows] = useState<CashflowRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [selectedCell, setSelectedCell] = useState<{
     rowId: string;
     monthIndex: number;
@@ -45,6 +49,21 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
     startValue: number;
     endMonth: number;
   } | null>(null);
+
+  useEffect(() => {
+    // Check auth state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (projectId) {
@@ -94,6 +113,11 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
     monthIndex: number,
     value: string
   ) => {
+    if (!user) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
     const numValue = parseFloat(value) || 0;
     const row = rows.find((r) => r.id === rowId);
     if (!row) return;
@@ -223,14 +247,12 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
 
   // Row manipulation functions
   const addRow = async (categoryId: string, afterRowId?: string) => {
+    if (!user) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("You must be logged in");
-        return;
-      }
 
       const categoryRows = rows.filter((r) => r.category_id === categoryId);
       const sortOrder = afterRowId
@@ -269,11 +291,12 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
   };
 
   const duplicateRow = async (rowId: string) => {
+    if (!user) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
 
       const sourceRow = rows.find((r) => r.id === rowId);
       if (!sourceRow) return;
@@ -310,6 +333,11 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
   };
 
   const deleteRow = async (rowId: string) => {
+    if (!user) {
+      setLoginDialogOpen(true);
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from("cashflow_rows")
@@ -421,6 +449,37 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
 
   return (
     <div className="space-y-6">
+      {/* Login Dialog */}
+      <LoginDialog
+        open={loginDialogOpen}
+        onOpenChange={setLoginDialogOpen}
+        onSuccess={() => {
+          toast.success("You can now edit your cashflow");
+          loadData();
+        }}
+      />
+
+      {/* Read-Only Banner */}
+      {!user && (
+        <Alert className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+          <Lock className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+          <AlertDescription className="flex items-center justify-between">
+            <span className="text-amber-900 dark:text-amber-100">
+              This plan is read-only. Log in to edit, add rows, and save your work.
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setLoginDialogOpen(true)}
+              className="ml-4 border-amber-600 text-amber-700 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900/30"
+            >
+              <LogIn className="w-4 h-4 mr-1" />
+              Log In
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Dashboard KPIs and Charts */}
       <CashflowDashboard categories={categories} rows={rows} />
 
@@ -500,6 +559,8 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                           variant="ghost"
                           onClick={() => addRow(category.id)}
                           className="h-6 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          disabled={!user}
+                          title={!user ? "Please log in to add rows" : ""}
                         >
                           + Add Row
                         </Button>
@@ -537,8 +598,9 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                           size="sm"
                           variant="outline"
                           onClick={() => addRow(category.id)}
+                          disabled={!user}
                         >
-                          + Add First Row
+                          {!user ? "Log in to add rows" : "+ Add First Row"}
                         </Button>
                       </td>
                     </tr>
@@ -580,6 +642,7 @@ export function CashflowTable({ projectId }: CashflowTableProps) {
                                   selectedCell?.rowId === row.id &&
                                   selectedCell?.monthIndex === i
                                 }
+                                readOnly={!user}
                               />
                             </td>
                           ))}
