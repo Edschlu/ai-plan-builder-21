@@ -21,14 +21,30 @@ export default function Workspace() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      // First, fetch workspace IDs where user is a member
+      const { data: memberships } = await supabase
+        .from('workspace_members')
+        .select('workspace_id')
+        .eq('user_id', user.id);
+
+      const memberWorkspaceIds = memberships?.map(m => m.workspace_id) || [];
+
+      // Then fetch workspaces where user is owner OR id is in member list
+      let query = supabase
         .from('workspaces')
         .select(`
           *,
           workspace_members(count)
         `)
-        .or(`owner_id.eq.${user.id},id.in.(select workspace_id from workspace_members where user_id='${user.id}')`)
         .order('created_at', { ascending: false });
+
+      if (memberWorkspaceIds.length > 0) {
+        query = query.or(`owner_id.eq.${user.id},id.in.(${memberWorkspaceIds.join(',')})`);
+      } else {
+        query = query.eq('owner_id', user.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setWorkspaces(data || []);
